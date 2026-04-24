@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Journey Through Media</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --pink:       #e8357a;
+      --pink-mid:   #f0508a;
+      --pink-light: #f472b6;
+      --coral:      #f87171;
+      --coral-warm: #fb923c;
+      /* Logo gradient: deep pink → soft pink → coral */
+      --gradient: linear-gradient(135deg, #e8357a 0%, #f06292 40%, #f87171 75%, #fb923c 100%);
+      --gradient-text: linear-gradient(135deg, #e8357a, #f06292, #f87171, #fb923c);
+      /* Light theme colours pulled from logo background */
+      --bg:      #ffffff;
+      --bg2:     #fff5f8;
+      --card:    #ffffff;
+      --card2:   #fff0f5;
+      --border:  rgba(232, 53, 122, 0.15);
+      --border2: rgba(232, 53, 122, 0.30);
+      --text:    #1a0510;
+      --text2:   #3d1030;
+      --muted:   #9e4070;
+      --muted2:  #c06080;
+      --shadow:  0 4px 24px rgba(232,53,122,0.10);
+      --shadow-hover: 0 10px 40px rgba(232,53,122,0.22);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg2); }
+    ::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 3px; }
+
+    /* SUBTLE PETAL PATTERN OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle at 20% 20%, rgba(232,53,122,0.04) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(251,146,60,0.04) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      box-shadow: 0 2px 16px rgba(232,53,122,0.07);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-star {
+      width: 42px;
+      height: 42px;
+    }
+
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--pink); }
+
+    .nav-btn {
+      background: var(--gradient);
+      color: white;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .nav-btn:hover { opacity: 0.85; transform: scale(1.03); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 7rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(160deg, #fff5f8 0%, #ffffff 40%, #fff8f2 100%);
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,53,122,0.10) 0%, rgba(251,146,60,0.06) 50%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    /* decorative circles */
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(232,53,122,0.08);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(232,53,122,0.07);
+      border: 1px solid rgba(232,53,122,0.20);
+      color: var(--pink);
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+      color: var(--text);
+      animation: fadeUp 0.7s ease 0.1s both;
+    }
+
+    .hero-title .gradient-word {
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+      animation: fadeUp 0.7s ease 0.2s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp 0.7s ease 0.3s both;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: white;
+      border: none;
+      padding: 0.9rem 2rem;
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 30px rgba(232,53,122,0.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(232,53,122,0.45); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--pink);
+      border: 1.5px solid rgba(232,53,122,0.35);
+      padding: 0.9rem 2rem;
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--pink); background: rgba(232,53,122,0.06); }
+
+    /* CATEGORIES BAR */
+    .categories {
+      padding: 2rem;
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+    }
+
+    .cat-pill {
+      padding: 0.45rem 1.1rem;
+      border-radius: 50px;
+      border: 1px solid var(--border2);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
+    }
+    .cat-pill:hover, .cat-pill.active {
+      background: var(--gradient);
+      border-color: transparent;
+      color: white;
+    }
+
+    /* FEATURED ARTICLE */
+    .section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--pink);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 2.5rem;
+      color: var(--text);
+    }
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .featured-card {
+      background: var(--card);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      position: relative;
+      box-shadow: var(--shadow);
+    }
+    .featured-card:hover { transform: translateY(-4px); border-color: var(--pink); box-shadow: var(--shadow-hover); }
+
+    .featured-image {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #fce4ec, #ffd0df, #ffe0b2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+
+    .featured-body { padding: 1.5rem; }
+    .article-category {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pink);
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+    .article-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+    .article-excerpt {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 1.2rem;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .meta-left { display: flex; align-items: center; gap: 0.5rem; }
+    .author-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; color: white;
+    }
+
+    /* ARTICLE ACTIONS */
+    .article-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: none;
+      border: none;
+      color: var(--muted2);
+      font-size: 0.82rem;
+      cursor: pointer;
+      padding: 0.35rem 0.7rem;
+      border-radius: 20px;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .action-btn:hover { background: rgba(232,53,122,0.08); color: var(--pink); }
+    .action-btn.liked { color: var(--pink); }
+    .action-btn svg { width: 16px; height: 16px; }
+
+    /* SIDE ARTICLES */
+    .side-articles { display: flex; flex-direction: column; gap: 1rem; }
+
+    .side-card {
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 1.2rem;
+      cursor: pointer;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      gap: 1rem;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+    .side-card:hover { transform: translateY(-2px); border-color: var(--pink); box-shadow: var(--shadow-hover); }
+
+    .side-img {
+      width: 70px; height: 70px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #fce4ec, #ffe0b2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+    }
+    .side-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 0.3rem;
+      color: var(--text);
+    }
+    .side-meta { font-size: 0.75rem; color: var(--muted); }
+
+    /* ARTICLE GRID */
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .article-card {
+      background: var(--card);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      box-shadow: var(--shadow);
+    }
+    .article-card:hover { transform: translateY(-4px); border-color: var(--pink); box-shadow: var(--shadow-hover); }
+
+    .article-img {
+      height: 180px;
+      background: linear-gradient(135deg, #fce4ec, #ffd0e0, #ffe8cc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+
+    .article-body { padding: 1.2rem; }
+    .article-card .article-title { font-size: 1.05rem; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(232,53,122,0.08);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: white;
+      border-radius: 24px;
+      border: 1px solid var(--border2);
+      width: 100%;
+      max-width: 680px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 2.5rem;
+      position: relative;
+      animation: modalIn 0.3s ease;
+      box-shadow: 0 24px 80px rgba(232,53,122,0.18);
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1.2rem; right: 1.2rem;
+      background: rgba(232,53,122,0.08);
+      border: none;
+      color: var(--muted);
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: rgba(232,53,122,0.15); color: var(--pink); }
+
+    .modal-category { margin-bottom: 0.5rem; }
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+      color: var(--text);
+    }
+    .modal-body {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+    .modal-body p { margin-bottom: 1rem; }
+
+    /* COMMENTS */
+    .comments-section { border-top: 1px solid var(--border); padding-top: 1.5rem; }
+    .comments-title { font-weight: 600; margin-bottom: 1rem; color: var(--text); }
+    .comment-input-wrap {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .comment-input {
+      flex: 1;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      resize: none;
+      transition: border-color 0.2s;
+    }
+    .comment-input:focus { outline: none; border-color: var(--pink); }
+    .comment-submit {
+      background: var(--gradient);
+      border: none;
+      color: white;
+      padding: 0 1.2rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: opacity 0.2s;
+    }
+    .comment-submit:hover { opacity: 0.85; }
+
+    .comment-list { display: flex; flex-direction: column; gap: 1rem; }
+    .comment-item {
+      background: var(--bg2);
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid var(--border);
+    }
+    .comment-author { font-weight: 600; font-size: 0.85rem; margin-bottom: 0.3rem; color: var(--pink); }
+    .comment-text { font-size: 0.9rem; color: var(--muted); }
+
+    /* WRITE ARTICLE MODAL */
+    .write-modal {
+      background: white;
+      border-radius: 24px;
+      border: 1px solid var(--border2);
+      width: 100%;
+      max-width: 720px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2.5rem;
+      position: relative;
+      animation: modalIn 0.3s ease;
+      box-shadow: 0 24px 80px rgba(232,53,122,0.18);
+    }
+
+    .form-group { margin-bottom: 1.5rem; }
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none; border-color: var(--pink);
+    }
+    .form-textarea { resize: vertical; min-height: 180px; }
+    .form-select option { background: white; color: var(--text); }
+
+    /* NEWSLETTER */
+    .newsletter {
+      background: linear-gradient(135deg, rgba(232,53,122,0.06), rgba(251,146,60,0.04));
+      border: 1px solid var(--border2);
+      border-radius: 24px;
+      padding: 3rem;
+      text-align: center;
+      margin: 2rem 0;
+    }
+    .newsletter h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+    .newsletter p { color: var(--muted); margin-bottom: 1.5rem; }
+    .newsletter-form {
+      display: flex;
+      gap: 0.75rem;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    .newsletter-input {
+      flex: 1;
+      background: white;
+      border: 1.5px solid var(--border2);
+      border-radius: 50px;
+      padding: 0.75rem 1.25rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+    }
+    .newsletter-input:focus { outline: none; border-color: var(--pink); }
+
+    /* FOOTER */
+    footer {
+      background: linear-gradient(160deg, #fff0f5 0%, #fff8f2 100%);
+      border-top: 1.5px solid var(--border2);
+      padding: 3rem 2rem 2rem;
+      margin-top: 4rem;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+    }
+    .footer-brand .logo-text { font-size: 1.1rem; display: block; margin-bottom: 0.75rem; }
+    .footer-tagline { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; }
+    .footer-contact { color: var(--muted); font-size: 0.85rem; line-height: 1.8; }
+    .footer-contact a { color: var(--pink); text-decoration: none; }
+
+    .footer-col h4 {
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pink);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 0.5rem; }
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--pink); }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 2rem auto 0;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SHARE TOAST */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: white;
+      border: 1.5px solid var(--pink);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      color: var(--pink);
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      box-shadow: 0 8px 30px rgba(232,53,122,0.20);
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* MOBILE NAV TOGGLE */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--pink);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* SECTION BACKGROUNDS — alternating rhythm */
+    section:nth-of-type(even) {
+      background: var(--bg2);
+    }
+
+    /* HERO DECORATIVE STAR WATERMARK */
+    .hero-watermark {
+      position: absolute;
+      right: -80px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 500px;
+      height: 500px;
+      opacity: 0.04;
+      pointer-events: none;
+    }
+
+    /* DIVIDER WAVE */
+    .wave-divider {
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+      margin-top: -2px;
+    }
+    .wave-divider svg {
+      display: block;
+      width: 100%;
+    }
+      .featured-grid { grid-template-columns: 1fr; }
+      .articles-grid { grid-template-columns: 1fr 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+    }
+
+    @media (max-width: 600px) {
+      .articles-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .newsletter-form { flex-direction: column; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <svg class="logo-star" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#e8357a"/>
+          <stop offset="100%" stop-color="#fb923c"/>
+        </linearGradient>
+      </defs>
+      <polygon points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35" fill="url(#sg)"/>
+      <polygon points="50,18 58,40 82,40 63,54 70,78 50,63 30,78 37,54 18,40 42,40" fill="rgba(255,255,255,0.25)"/>
+      <text x="50" y="57" text-anchor="middle" font-family="serif" font-weight="700" font-size="22" fill="white">J</text>
+    </svg>
+    <span class="logo-text">JOURNEY<br>THROUGH MEDIA</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="filterCategory('All')">Home</a></li>
+    <li><a href="#" onclick="filterCategory('Music')">Music</a></li>
+    <li><a href="#" onclick="filterCategory('Fashion')">Fashion</a></li>
+    <li><a href="#" onclick="filterCategory('Culture')">Culture</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-btn" onclick="openWriteModal()">✍️ Write</button>
+  <button class="hamburger" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <!-- Watermark star -->
+  <svg class="hero-watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35" fill="#e8357a"/>
+  </svg>
+  <div class="hero-content">
+    <span class="hero-tag">✦ Based in Johannesburg, South Africa</span>
+    <h1 class="hero-title">
+      Where <span class="gradient-word">Culture</span> Leads<br>From Sound to Style
+    </h1>
+    <p class="hero-subtitle">Welcome to Journey Through Media — we cover the journey where music, fashion, and culture converge.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="scrollToArticles()">Explore Stories</button>
+      <button class="btn-outline" onclick="openWriteModal()">Submit Article</button>
+    </div>
+  </div>
+</section>
+<!-- Wave divider -->
+<div class="wave-divider">
+  <svg viewBox="0 0 1440 40" preserveAspectRatio="none" height="40">
+    <path d="M0,20 C360,40 1080,0 1440,20 L1440,40 L0,40 Z" fill="#fff5f8"/>
+  </svg>
+</div>
+
+<!-- CATEGORIES -->
+<div class="categories" id="categories">
+  <button class="cat-pill active" onclick="filterCategory('All')">All</button>
+  <button class="cat-pill" onclick="filterCategory('Music')">🎵 Music</button>
+  <button class="cat-pill" onclick="filterCategory('Fashion')">👗 Fashion</button>
+  <button class="cat-pill" onclick="filterCategory('Culture')">🌍 Culture</button>
+  <button class="cat-pill" onclick="filterCategory('Film & TV')">🎬 Film & TV</button>
+  <button class="cat-pill" onclick="filterCategory('Tech')">💻 Tech</button>
+  <button class="cat-pill" onclick="filterCategory('Lifestyle')">✨ Lifestyle</button>
+</div>
+
+<!-- FEATURED -->
+<section class="section" id="articles">
+  <p class="section-label">✦ Featured</p>
+  <h2 class="section-title">Top Stories</h2>
+  <div class="featured-grid">
+    <div class="featured-card" onclick="openArticle(0)">
+      <div class="featured-image">🎵</div>
+      <div class="featured-body">
+        <p class="article-category">Music</p>
+        <h3 class="article-title">Amapiano Takes Over the Globe: How SA's Sound Became the World's Soundtrack</h3>
+        <p class="article-excerpt">From Soweto's house parties to international stages, amapiano has redefined what African music means to the world. We trace its unstoppable rise.</p>
+        <div class="article-meta">
+          <div class="meta-left">
+            <div class="author-dot">T</div>
+            <span>Thandeka M. · 5 min read</span>
+          </div>
+          <span>Apr 2025</span>
+        </div>
+        <div class="article-actions">
+          <button class="action-btn" onclick="toggleLike(event, 0)">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span id="like-count-0">248</span>
+          </button>
+          <button class="action-btn" onclick="openArticle(0)">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>34 Comments</span>
+          </button>
+          <button class="action-btn" onclick="shareArticle(event, 0)">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-articles">
+      <div class="side-card" onclick="openArticle(1)">
+        <div class="side-img">👗</div>
+        <div>
+          <p class="article-category">Fashion</p>
+          <p class="side-title">African Designers Are Reshaping Global Runways</p>
+          <p class="side-meta">Nomsa K. · 4 min read</p>
+        </div>
+      </div>
+      <div class="side-card" onclick="openArticle(2)">
+        <div class="side-img">🎬</div>
+        <div>
+          <p class="article-category">Film & TV</p>
+          <p class="side-title">Nollywood's Streaming Era: What Netflix Changed</p>
+          <p class="side-meta">Bongani L. · 6 min read</p>
+        </div>
+      </div>
+      <div class="side-card" onclick="openArticle(3)">
+        <div class="side-img">🌍</div>
+        <div>
+          <p class="article-category">Culture</p>
+          <p class="side-title">The Rise of Afrobeats in Johannesburg's Night Scene</p>
+          <p class="side-meta">Lerato S. · 3 min read</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MORE ARTICLES -->
+<section class="section">
+  <p class="section-label">✦ Latest</p>
+  <h2 class="section-title">Fresh From the Journey</h2>
+  <div class="articles-grid" id="articles-grid">
+    <!-- JS renders cards here -->
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="section">
+  <div class="newsletter">
+    <h2>Stay on the Journey 🌟</h2>
+    <p>Get the freshest stories in music, fashion & culture delivered to your inbox.</p>
+    <div class="newsletter-form">
+      <input class="newsletter-input" type="email" placeholder="Your email address" id="newsletter-email"/>
+      <button class="btn-primary" onclick="subscribeNewsletter()" style="white-space:nowrap">Subscribe</button>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section class="section" id="contact">
+  <p class="section-label">✦ Get In Touch</p>
+  <h2 class="section-title">Contact Us</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:2rem;box-shadow:var(--shadow);">
+      <h3 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;color:var(--text);">Reach Out</h3>
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <span style="font-size:1.4rem">📧</span>
+          <div>
+            <p style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">Email</p>
+            <a href="mailto:jjourneythroughmedia@gmail.com" style="color:var(--pink);text-decoration:none;font-size:0.95rem">jjourneythroughmedia@gmail.com</a>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <span style="font-size:1.4rem">📞</span>
+          <div>
+            <p style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">Phone</p>
+            <a href="tel:+27643408670" style="color:var(--pink);text-decoration:none;font-size:0.95rem">064 340 8670</a>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <span style="font-size:1.4rem">📍</span>
+          <div>
+            <p style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">Location</p>
+            <p style="color:var(--text);font-size:0.95rem">Johannesburg, South Africa</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:2rem;box-shadow:var(--shadow);">
+      <h3 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;color:var(--text);">Send a Message</h3>
+      <div class="form-group">
+        <label class="form-label">Your Name</label>
+        <input class="form-input" type="text" placeholder="John Doe"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" placeholder="you@example.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-textarea" placeholder="Your message..." style="min-height:100px"></textarea>
+      </div>
+      <button class="btn-primary" onclick="sendMessage()" style="width:100%">Send Message</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo-text" style="font-family:'Playfair Display',serif;font-size:1rem;letter-spacing:0.08em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">JOURNEY THROUGH MEDIA</span>
+      <p class="footer-tagline">Where culture leads from sound to style — we cover the journey.</p>
+      <div class="footer-contact">
+        <p>📧 <a href="mailto:jjourneythroughmedia@gmail.com">jjourneythroughmedia@gmail.com</a></p>
+        <p>📞 <a href="tel:+27643408670">064 340 8670</a></p>
+        <p>📍 Johannesburg, South Africa</p>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul class="footer-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Music</a></li>
+        <li><a href="#">Fashion</a></li>
+        <li><a href="#">Culture</a></li>
+        <li><a href="#">Film & TV</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul class="footer-links">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Write for Us</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#">Advertise</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul class="footer-links">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Use</a></li>
+        <li><a href="#">Cookie Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Journey Through Media. All rights reserved.</p>
+    <p>Made with ❤️ in Johannesburg</p>
+  </div>
+</footer>
+
+<!-- ARTICLE READ MODAL -->
+<div class="modal-overlay" id="article-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('article-modal')">✕</button>
+    <p class="article-category modal-category" id="modal-category"></p>
+    <h2 class="modal-title" id="modal-title"></h2>
+    <div class="article-meta" style="margin-bottom:1.5rem">
+      <div class="meta-left">
+        <div class="author-dot" id="modal-author-dot"></div>
+        <span id="modal-meta"></span>
+      </div>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="article-actions" style="margin-bottom:1.5rem">
+      <button class="action-btn" id="modal-like-btn" onclick="toggleModalLike()">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span id="modal-like-count"></span> Likes
+      </button>
+      <button class="action-btn" onclick="shareArticle(event, currentArticle)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+    </div>
+    <div class="comments-section">
+      <p class="comments-title">💬 Comments (<span id="comment-count">0</span>)</p>
+      <div class="comment-input-wrap">
+        <textarea class="comment-input" placeholder="Share your thoughts..." rows="2" id="comment-input"></textarea>
+        <button class="comment-submit" onclick="postComment()">Post</button>
+      </div>
+      <div class="comment-list" id="comment-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- WRITE ARTICLE MODAL -->
+<div class="modal-overlay" id="write-modal">
+  <div class="write-modal">
+    <button class="modal-close" onclick="closeModal('write-modal')">✕</button>
+    <p class="section-label" style="margin-bottom:0.5rem">✦ Contribute</p>
+    <h2 class="modal-title">Write an Article</h2>
+    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:2rem">Share your perspective on music, fashion, culture and more.</p>
+    <div class="form-group">
+      <label class="form-label">Your Name</label>
+      <input class="form-input" type="text" id="write-name" placeholder="Your full name"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input class="form-input" type="email" id="write-email" placeholder="your@email.com"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <select class="form-select" id="write-category">
+        <option value="">Select a category</option>
+        <option>Music</option>
+        <option>Fashion</option>
+        <option>Culture</option>
+        <option>Film & TV</option>
+        <option>Tech</option>
+        <option>Lifestyle</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Article Title</label>
+      <input class="form-input" type="text" id="write-title" placeholder="Give your story a headline"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Your Article</label>
+      <textarea class="form-textarea" id="write-body" placeholder="Write your article here..."></textarea>
+    </div>
+    <button class="btn-primary" onclick="submitArticle()" style="width:100%;padding:1rem">Submit for Review</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const articles = [
+    {
+      id: 0,
+      category: "Music",
+      icon: "🎵",
+      title: "Amapiano Takes Over the Globe: How SA's Sound Became the World's Soundtrack",
+      author: "Thandeka M.",
+      authorInitial: "T",
+      date: "Apr 2025",
+      readTime: "5 min read",
+      excerpt: "From Soweto's house parties to international stages, amapiano has redefined what African music means to the world.",
+      body: `<p>It started in the townships. A bassline here, a log drum there, voices layered over a groove that felt both ancient and futuristic. Amapiano, South Africa's defining musical export of the past decade, has done what few African genres have managed before it — it conquered the world on its own terms.</p><p>Artists like Kabza De Small, DJ Maphorisa, and Focalistic brought the sound to mainstream consciousness, but it was the collective effort of thousands of producers, dancers, and listeners who gave amapiano its soul. By 2023, it had reached stages in London, New York, and Tokyo. By 2025, it's simply everywhere.</p><p>What makes amapiano special isn't just its sound — it's the community that carries it. Every hit is a collaboration, every song a conversation between producer and dancefloor. Journey Through Media sat down with producers from Johannesburg to understand what this moment means for South African music culture and where the genre goes from here.</p>`,
+      likes: 248,
+      comments: [
+        { author: "Sipho", text: "This is such an important piece! Amapiano deserves all the recognition." },
+        { author: "Lerato", text: "Growing up in Soweto, hearing amapiano go global hits different. 🙏" }
+      ]
+    },
+    {
+      id: 1,
+      category: "Fashion",
+      icon: "👗",
+      title: "African Designers Are Reshaping Global Runways",
+      author: "Nomsa K.",
+      authorInitial: "N",
+      date: "Mar 2025",
+      readTime: "4 min read",
+      excerpt: "A new generation of African-born designers is forcing the fashion world to look south — and they're not following trends, they're setting them.",
+      body: `<p>For decades, African fashion was either exoticized or ignored by the global industry. Today, that narrative is being rewritten — thread by thread, collection by collection — by a fearless generation of designers who are demanding to be seen on their own terms.</p><p>From Cape Town to Lagos, Nairobi to Johannesburg, designers like Rich Mnisi and Thebe Magugu are earning international acclaim while staying rooted in African identity. Magugu, a South African designer, became the first African to win the prestigious LVMH Prize in 2019. Since then, he has dressed celebrities globally without abandoning the township storytelling that defines his work.</p><p>This is fashion as cultural assertion. As political statement. And increasingly — as pure, undeniable art that the rest of the world can no longer afford to ignore.</p>`,
+      likes: 192,
+      comments: []
+    },
+    {
+      id: 2,
+      category: "Film & TV",
+      icon: "🎬",
+      title: "Nollywood's Streaming Era: What Netflix Changed",
+      author: "Bongani L.",
+      authorInitial: "B",
+      date: "Mar 2025",
+      readTime: "6 min read",
+      excerpt: "When Netflix started investing in African content, it didn't just change how people watched films — it changed what stories got told.",
+      body: `<p>Before streaming, Nollywood already had the numbers. Nigeria's film industry is the second-largest in the world by output, producing thousands of films annually. But distribution was always its Achilles heel — films released on DVDs or at local cinemas rarely crossed borders.</p><p>Netflix's arrival on the continent changed the equation. Productions like 'Blood Sisters', 'Shanty Town', and 'Glamour Girls' reached audiences across Africa and in diaspora communities worldwide. Suddenly, African stories were competing for attention on the same platform as Hollywood blockbusters.</p><p>The results have been remarkable. 'Blood Sisters' entered Netflix's global top 10 in its first week. African content is no longer a niche — it's a genre in its own right, and the continent's storytellers are only getting started.</p>`,
+      likes: 167,
+      comments: [{ author: "Funmi", text: "Blood Sisters was absolutely gripping. More of this please!" }]
+    },
+    {
+      id: 3,
+      category: "Culture",
+      icon: "🌍",
+      title: "The Rise of Afrobeats in Johannesburg's Night Scene",
+      author: "Lerato S.",
+      authorInitial: "L",
+      date: "Apr 2025",
+      readTime: "3 min read",
+      excerpt: "JHB's clubs are increasingly playing Burna Boy and Wizkid alongside homegrown sounds — and the city is better for it.",
+      body: `<p>Walk into any upscale venue in Sandton or Braamfontein on a Friday night, and you'll hear it — the unmistakable rhythm of Afrobeats weaving between amapiano and hip-hop sets. Johannesburg's nightlife has always been cosmopolitan, but the embrace of West African sounds marks a new chapter in Pan-African cultural exchange.</p><p>Local DJs say they've been playing Burna Boy, Wizkid, and Davido for years. What's changed is that mainstream audiences are now requesting them by name. Social media, cross-border friendships, and streaming algorithms have built bridges between Lagos and Johannesburg that geography tried to make difficult.</p><p>For the young Joburgers packing these dancefloors, the music isn't foreign — it's family.</p>`,
+      likes: 134,
+      comments: []
+    },
+    {
+      id: 4,
+      category: "Tech",
+      icon: "💻",
+      title: "How AI Is Changing Music Production in Africa",
+      author: "Kagiso M.",
+      authorInitial: "K",
+      date: "Apr 2025",
+      readTime: "4 min read",
+      excerpt: "Producers in Johannesburg are using AI tools to stretch budgets and democratize music creation like never before.",
+      body: `<p>A bedroom producer in Soweto shouldn't have to compete with a studio in Los Angeles on equipment budget alone. Increasingly, they don't have to. A new generation of AI-powered music tools is democratizing production, allowing artists with a laptop and an idea to create professional-quality sound.</p><p>Tools for mastering, mixing, and even melody generation are becoming affordable or free. South African producers are adapting quickly — using AI not to replace creativity, but to remove the technical barriers that once stood between an idea and its realization.</p>`,
+      likes: 112,
+      comments: []
+    },
+    {
+      id: 5,
+      category: "Lifestyle",
+      icon: "✨",
+      title: "The New Joburg Creative: Hustling Across Music, Art, and Brand",
+      author: "Thandeka M.",
+      authorInitial: "T",
+      date: "Apr 2025",
+      readTime: "5 min read",
+      excerpt: "Meet the new generation of Johannesburg creatives who refuse to be put in a single box — and are building empires because of it.",
+      body: `<p>She makes music on Tuesday, shoots content on Wednesday, consults for a fashion brand on Thursday, and DJs on Friday night. Meet the multi-hyphenate Joburg creative — the person who isn't choosing one lane because, frankly, why would you?</p><p>The creative economy in South Africa is booming, and with it comes a new type of professional: fluid, entrepreneurial, and deeply connected to community. Platforms like Instagram and TikTok have removed traditional gatekeepers. If you have skill and consistency, the audience will find you.</p><p>We spoke to five young Joburgers living this life — balancing passion and business, building something real.</p>`,
+      likes: 189,
+      comments: []
+    }
+  ];
+
+  let currentArticle = 0;
+  let currentComments = [];
+
+  function renderArticlesGrid(filter = 'All') {
+    const grid = document.getElementById('articles-grid');
+    const filtered = filter === 'All' ? articles.slice(2) : articles.slice(2).filter(a => a.category === filter);
+    if (filtered.length === 0) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:3rem">No articles in this category yet. Be the first to write one! ✍️</div>`;
+      return;
+    }
+    grid.innerHTML = filtered.map(a => `
+      <div class="article-card" onclick="openArticle(${a.id})">
+        <div class="article-img">${a.icon}</div>
+        <div class="article-body">
+          <p class="article-category">${a.category}</p>
+          <h3 class="article-title">${a.title}</h3>
+          <p class="article-excerpt">${a.excerpt}</p>
+          <div class="article-meta" style="margin-bottom:0">
+            <div class="meta-left">
+              <div class="author-dot">${a.authorInitial}</div>
+              <span>${a.author} · ${a.readTime}</span>
+            </div>
+          </div>
+          <div class="article-actions">
+            <button class="action-btn" onclick="toggleLike(event, ${a.id})">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span>${a.likes}</span>
+            </button>
+            <button class="action-btn" onclick="event.stopPropagation();openArticle(${a.id})">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              ${a.comments.length}
+            </button>
+            <button class="action-btn" onclick="shareArticle(event, ${a.id})">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function openArticle(id) {
+    const a = articles[id];
+    currentArticle = id;
+    currentComments = [...a.comments];
+    document.getElementById('modal-category').textContent = a.category;
+    document.getElementById('modal-title').textContent = a.title;
+    document.getElementById('modal-author-dot').textContent = a.authorInitial;
+    document.getElementById('modal-meta').textContent = `${a.author} · ${a.readTime} · ${a.date}`;
+    document.getElementById('modal-body').innerHTML = a.body;
+    document.getElementById('modal-like-count').textContent = a.likes;
+    renderComments();
+    document.getElementById('article-modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function renderComments() {
+    const list = document.getElementById('comment-list');
+    document.getElementById('comment-count').textContent = currentComments.length;
+    if (currentComments.length === 0) {
+      list.innerHTML = `<p style="color:var(--muted);font-size:0.9rem">No comments yet. Be the first!</p>`;
+      return;
+    }
+    list.innerHTML = currentComments.map(c => `
+      <div class="comment-item">
+        <p class="comment-author">${c.author}</p>
+        <p class="comment-text">${c.text}</p>
+      </div>
+    `).join('');
+  }
+
+  function postComment() {
+    const input = document.getElementById('comment-input');
+    const text = input.value.trim();
+    if (!text) return;
+    currentComments.push({ author: 'You', text });
+    articles[currentArticle].comments = currentComments;
+    input.value = '';
+    renderComments();
+    showToast('Comment posted! 💬');
+  }
+
+  function toggleLike(event, id) {
+    event.stopPropagation();
+    articles[id].likes++;
+    const btn = event.currentTarget;
+    btn.classList.toggle('liked');
+    const span = btn.querySelector('span');
+    if (span) span.textContent = articles[id].likes;
+    showToast('❤️ Liked!');
+    renderArticlesGrid();
+  }
+
+  function toggleModalLike() {
+    articles[currentArticle].likes++;
+    document.getElementById('modal-like-count').textContent = articles[currentArticle].likes;
+    document.getElementById('modal-like-btn').classList.add('liked');
+    showToast('❤️ Liked!');
+  }
+
+  function shareArticle(event, id) {
+    event.stopPropagation();
+    const title = articles[id].title;
+    if (navigator.share) {
+      navigator.share({ title, url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      showToast('🔗 Link copied to clipboard!');
+    }
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function openWriteModal() {
+    document.getElementById('write-modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function submitArticle() {
+    const name = document.getElementById('write-name').value.trim();
+    const title = document.getElementById('write-title').value.trim();
+    const body = document.getElementById('write-body').value.trim();
+    const category = document.getElementById('write-category').value;
+    if (!name || !title || !body || !category) {
+      showToast('⚠️ Please fill in all fields');
+      return;
+    }
+    closeModal('write-modal');
+    showToast('✅ Article submitted for review!');
+    ['write-name','write-email','write-title','write-body'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('write-category').value = '';
+  }
+
+  function filterCategory(cat) {
+    document.querySelectorAll('.cat-pill').forEach(p => {
+      p.classList.toggle('active', p.textContent.includes(cat) || (cat === 'All' && p.textContent === 'All'));
+    });
+    renderArticlesGrid(cat);
+    document.getElementById('articles').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function scrollToArticles() {
+    document.getElementById('articles').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function subscribeNewsletter() {
+    const email = document.getElementById('newsletter-email').value.trim();
+    if (!email || !email.includes('@')) { showToast('⚠️ Enter a valid email'); return; }
+    document.getElementById('newsletter-email').value = '';
+    showToast('🎉 You\'re subscribed! Welcome to the journey.');
+  }
+
+  function sendMessage() {
+    showToast('✅ Message sent! We\'ll be in touch soon.');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  function toggleMobileMenu() {
+    const links = document.querySelector('.nav-links');
+    if (links.style.display === 'flex') {
+      links.style.display = 'none';
+    } else {
+      links.style.cssText = 'display:flex;flex-direction:column;position:absolute;top:70px;left:0;right:0;background:#fff5f8;padding:1.5rem 2rem;border-bottom:1px solid rgba(232,53,122,0.15);gap:1rem;z-index:99;';
+    }
+  }
+
+  // Close modal on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  });
+
+  // Init
+  renderArticlesGrid();
+</script>
+</body>
+</html>
