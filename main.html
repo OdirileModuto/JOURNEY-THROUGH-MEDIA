@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Journey Through Media</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -1326,6 +1328,34 @@
     ['write-name','write-email','write-title','write-body'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('write-category').value = '';
   }
+
+  async function loadArticles() {
+  const res = await fetch("https://your-site.netlify.app/content/blog/index.json");
+  const data = await res.json();
+
+let articles = [];
+
+async function loadArticles() {
+  const res = await fetch("/content/blog/index.json");
+  const posts = await res.json();
+
+  articles = posts.map((post, index) => ({
+    id: index,
+    title: post.title,
+    category: post.category,
+    author: post.author,
+    excerpt: post.excerpt,
+    body: marked.parse(post.body),
+    cover: post.cover,
+    date: post.date,
+    likes: 0,
+    comments: []
+  }));
+
+  renderArticlesGrid();
+}
+
+loadArticles();
 
   function filterCategory(cat) {
     document.querySelectorAll('.cat-pill').forEach(p => {
