@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Journeyy Through Media</title>
+  <title>Journey Through Media</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -385,6 +385,41 @@
     .action-btn:hover { background: rgba(232,53,122,0.08); color: var(--pink); }
     .action-btn.liked { color: var(--pink); }
     .action-btn svg { width: 16px; height: 16px; }
+    .action-btn.delete-btn:hover { background: rgba(220,38,38,0.09); color: #dc2626; }
+
+    /* DELETE CONFIRM DIALOG */
+    .confirm-dialog {
+      position: fixed; inset: 0; z-index: 1100;
+      display: none; align-items: center; justify-content: center;
+      background: rgba(26,5,16,0.45); backdrop-filter: blur(6px);
+    }
+    .confirm-dialog.active { display: flex; }
+    .confirm-box {
+      background: white; border-radius: 20px; padding: 2rem;
+      max-width: 380px; width: 90%; text-align: center;
+      box-shadow: 0 24px 80px rgba(232,53,122,0.18);
+      border: 1px solid var(--border2);
+      animation: modalIn 0.25s ease;
+    }
+    .confirm-box .confirm-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .confirm-box h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text); }
+    .confirm-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .confirm-actions { display: flex; gap: 0.75rem; justify-content: center; }
+    .btn-cancel {
+      background: var(--bg2); border: 1px solid var(--border2); color: var(--muted);
+      padding: 0.65rem 1.4rem; border-radius: 50px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .btn-cancel:hover { border-color: var(--pink); color: var(--pink); }
+    .btn-delete-confirm {
+      background: linear-gradient(135deg, #dc2626, #ef4444);
+      color: white; border: none; padding: 0.65rem 1.4rem;
+      border-radius: 50px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.9rem;
+      box-shadow: 0 4px 16px rgba(220,38,38,0.3); transition: opacity 0.2s;
+    }
+    .btn-delete-confirm:hover { opacity: 0.85; }
 
     /* SIDE ARTICLES */
     .side-articles { display: flex; flex-direction: column; gap: 1rem; }
@@ -611,6 +646,36 @@
     }
     .form-textarea { resize: vertical; min-height: 180px; }
     .form-select option { background: white; color: var(--text); }
+
+    /* IMAGE UPLOAD */
+    .image-upload-area {
+      width: 100%; border: 2px dashed var(--border2); border-radius: 12px;
+      padding: 2rem; text-align: center; cursor: pointer; transition: all 0.2s;
+      background: var(--bg2); position: relative;
+    }
+    .image-upload-area:hover { border-color: var(--pink); background: rgba(232,53,122,0.04); }
+    .image-upload-area.has-image { padding: 0; border-style: solid; border-color: var(--pink); }
+    .image-upload-area input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .image-upload-area img.preview-img {
+      width: 100%; height: 200px; object-fit: cover; border-radius: 10px; display: none;
+    }
+    .image-upload-area.has-image img.preview-img { display: block; }
+    .image-upload-placeholder { pointer-events: none; }
+    .image-upload-placeholder .upload-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .image-upload-placeholder p { color: var(--muted); font-size: 0.9rem; }
+    .image-upload-placeholder span { color: var(--pink); font-weight: 600; }
+    .image-remove-btn {
+      position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(0,0,0,0.55);
+      color: white; border: none; border-radius: 50%; width: 28px; height: 28px;
+      cursor: pointer; font-size: 0.85rem; display: none;
+      align-items: center; justify-content: center; z-index: 2;
+    }
+    .has-image .image-remove-btn { display: flex; }
+    .has-image .image-upload-placeholder { display: none; }
+    .article-img-photo { height: 180px; width: 100%; object-fit: cover; }
+    .modal-hero-img { width: 100%; height: 240px; object-fit: cover; border-radius: 16px; margin-bottom: 1.5rem; }
 
     /* NEWSLETTER */
     .newsletter {
@@ -1035,6 +1100,7 @@
         <span id="modal-meta"></span>
       </div>
     </div>
+    <img id="modal-hero-img" class="modal-hero-img" src="" alt="" style="display:none"/>
     <div class="modal-body" id="modal-body"></div>
     <div class="article-actions" style="margin-bottom:1.5rem">
       <button class="action-btn" id="modal-like-btn" onclick="toggleModalLike()">
@@ -1044,6 +1110,10 @@
       <button class="action-btn" onclick="shareArticle(event, currentArticle)">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         Share
+      </button>
+      <button class="action-btn delete-btn" onclick="confirmDelete(currentArticle)" style="margin-left:auto">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        Delete
       </button>
     </div>
     <div class="comments-section">
@@ -1089,10 +1159,36 @@
       <input class="form-input" type="text" id="write-title" placeholder="Give your story a headline"/>
     </div>
     <div class="form-group">
+      <label class="form-label">Cover Image <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+      <div class="image-upload-area" id="upload-area">
+        <input type="file" id="write-image" accept="image/*" onchange="handleImageUpload(event)"/>
+        <button type="button" class="image-remove-btn" onclick="removeImage(event)">&#x2715;</button>
+        <img class="preview-img" id="image-preview" src="" alt="Preview"/>
+        <div class="image-upload-placeholder">
+          <div class="upload-icon">&#x1F5BC;&#xFE0F;</div>
+          <p><span>Click to upload</span> or drag &amp; drop</p>
+          <p style="font-size:0.8rem;margin-top:0.25rem">JPG, PNG, WEBP &mdash; max 5MB</p>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
       <label class="form-label">Your Article</label>
       <textarea class="form-textarea" id="write-body" placeholder="Write your article here..."></textarea>
     </div>
-    <button class="btn-primary" onclick="submitArticle()" style="width:100%;padding:1rem">Submit for Review</button>
+    <button class="btn-primary" onclick="submitArticle()" style="width:100%;padding:1rem">Publish Article</button>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM DIALOG -->
+<div class="confirm-dialog" id="confirm-dialog">
+  <div class="confirm-box">
+    <div class="confirm-icon">🗑️</div>
+    <h3>Delete this article?</h3>
+    <p>This can't be undone. The article will be permanently removed from the site.</p>
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-delete-confirm" onclick="executeDelete()">Yes, Delete</button>
+    </div>
   </div>
 </div>
 
@@ -1209,7 +1305,10 @@
 
     grid.innerHTML = sorted.map(a => `
       <div class="article-card" onclick="openArticle(${a.id})">
-        <div class="article-img">${a.icon}</div>
+        ${a.image
+          ? `<img class="article-img-photo" src="${a.image}" alt="${a.title}"/>`
+          : `<div class="article-img">${a.icon}</div>`
+        }
         <div class="article-body">
           <p class="article-category">${a.category}</p>
           <h3 class="article-title">${a.title}</h3>
@@ -1232,6 +1331,9 @@
             <button class="action-btn" onclick="shareArticle(event, ${a.id})">
               <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
             </button>
+            <button class="action-btn delete-btn" onclick="confirmDelete(${a.id}, event)" style="margin-left:auto">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+            </button>
           </div>
         </div>
       </div>
@@ -1248,6 +1350,9 @@
     document.getElementById('modal-meta').textContent = `${a.author} · ${a.readTime} · ${a.date}`;
     document.getElementById('modal-body').innerHTML = a.body;
     document.getElementById('modal-like-count').textContent = a.likes;
+    const heroImg = document.getElementById('modal-hero-img');
+    if (a.image) { heroImg.src = a.image; heroImg.style.display = 'block'; }
+    else { heroImg.style.display = 'none'; heroImg.src = ''; }
     document.getElementById('modal-like-btn').classList.remove('liked');
     renderComments();
     document.getElementById('article-modal').classList.add('active');
@@ -1319,6 +1424,29 @@
     document.body.style.overflow = 'hidden';
   }
 
+  let uploadedImageDataUrl = null;
+
+  function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { showToast('⚠️ Image must be under 5MB'); return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      uploadedImageDataUrl = e.target.result;
+      document.getElementById('image-preview').src = uploadedImageDataUrl;
+      document.getElementById('upload-area').classList.add('has-image');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeImage(event) {
+    event.stopPropagation();
+    uploadedImageDataUrl = null;
+    document.getElementById('image-preview').src = '';
+    document.getElementById('write-image').value = '';
+    document.getElementById('upload-area').classList.remove('has-image');
+  }
+
   function submitArticle() {
     const name = document.getElementById('write-name').value.trim();
     const title = document.getElementById('write-title').value.trim();
@@ -1337,6 +1465,7 @@
       id: articles.length,
       category,
       icon: icons[category] || '📝',
+      image: uploadedImageDataUrl || null,
       title,
       author: name,
       authorInitial: name.charAt(0).toUpperCase(),
@@ -1358,6 +1487,10 @@
       document.getElementById(id).value = '';
     });
     document.getElementById('write-category').value = '';
+    uploadedImageDataUrl = null;
+    document.getElementById('image-preview').src = '';
+    document.getElementById('write-image').value = '';
+    document.getElementById('upload-area').classList.remove('has-image');
 
     // Re-render the grid and scroll to it
     renderArticlesGrid();
@@ -1365,6 +1498,35 @@
       document.getElementById('articles-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 300);
   }
+
+  let articleToDelete = null;
+
+  function confirmDelete(id, event) {
+    if (event) event.stopPropagation();
+    articleToDelete = id;
+    document.getElementById('confirm-dialog').classList.add('active');
+  }
+
+  function closeConfirm() {
+    document.getElementById('confirm-dialog').classList.remove('active');
+    articleToDelete = null;
+  }
+
+  function executeDelete() {
+    if (articleToDelete === null) return;
+    const idx = articles.findIndex(a => a.id === articleToDelete);
+    if (idx !== -1) articles.splice(idx, 1);
+    // Close the article modal if the deleted article was open
+    closeModal('article-modal');
+    closeConfirm();
+    renderArticlesGrid();
+    showToast('🗑️ Article deleted.');
+  }
+
+  // Close confirm dialog on backdrop click
+  document.getElementById('confirm-dialog').addEventListener('click', function(e) {
+    if (e.target === this) closeConfirm();
+  });
 
   function filterCategory(cat) {
     document.querySelectorAll('.cat-pill').forEach(p => {
