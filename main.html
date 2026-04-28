@@ -1195,16 +1195,19 @@
 
   function renderArticlesGrid(filter = 'All') {
     const grid = document.getElementById('articles-grid');
-    const filtered = filter === 'All'
-      ? articles.slice(2)
-      : articles.slice(2).filter(a => a.category === filter);
+    // Always show everything after the 2 hardcoded featured articles
+    const pool = articles.slice(2);
+    const filtered = filter === 'All' ? pool : pool.filter(a => a.category === filter);
 
     if (filtered.length === 0) {
       grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:3rem">No articles in this category yet. Be the first to write one! ✍️</div>`;
       return;
     }
 
-    grid.innerHTML = filtered.map(a => `
+    // Show newest first
+    const sorted = [...filtered].reverse();
+
+    grid.innerHTML = sorted.map(a => `
       <div class="article-card" onclick="openArticle(${a.id})">
         <div class="article-img">${a.icon}</div>
         <div class="article-body">
@@ -1319,18 +1322,48 @@
   function submitArticle() {
     const name = document.getElementById('write-name').value.trim();
     const title = document.getElementById('write-title').value.trim();
-    const body = document.getElementById('write-body').value.trim();
+    const bodyText = document.getElementById('write-body').value.trim();
     const category = document.getElementById('write-category').value;
-    if (!name || !title || !body || !category) {
+    if (!name || !title || !bodyText || !category) {
       showToast('⚠️ Please fill in all fields');
       return;
     }
+
+    // Category emoji map
+    const icons = { Music: '🎵', Fashion: '👗', Culture: '🌍', 'Film & TV': '🎬', Tech: '💻', Lifestyle: '✨' };
+
+    // Build the new article and push it into the array
+    const newArticle = {
+      id: articles.length,
+      category,
+      icon: icons[category] || '📝',
+      title,
+      author: name,
+      authorInitial: name.charAt(0).toUpperCase(),
+      date: new Date().toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' }),
+      readTime: `${Math.max(1, Math.ceil(bodyText.split(' ').length / 200))} min read`,
+      excerpt: bodyText.substring(0, 160) + (bodyText.length > 160 ? '…' : ''),
+      body: bodyText.split('\n').filter(p => p.trim()).map(p => `<p>${p}</p>`).join(''),
+      likes: 0,
+      comments: []
+    };
+
+    articles.push(newArticle);
+
     closeModal('write-modal');
-    showToast('✅ Article submitted for review!');
+    showToast('✅ Article published! Scroll down to see it.');
+
+    // Clear form fields
     ['write-name', 'write-email', 'write-title', 'write-body'].forEach(id => {
       document.getElementById(id).value = '';
     });
     document.getElementById('write-category').value = '';
+
+    // Re-render the grid and scroll to it
+    renderArticlesGrid();
+    setTimeout(() => {
+      document.getElementById('articles-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
   }
 
   function filterCategory(cat) {
