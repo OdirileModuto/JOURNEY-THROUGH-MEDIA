@@ -1100,7 +1100,10 @@
         <span id="modal-meta"></span>
       </div>
     </div>
-    <img id="modal-hero-img" class="modal-hero-img" src="" alt="" style="display:none"/>
+    <div id="modal-gallery" class="modal-gallery" style="display:none">
+      <img id="modal-gallery-main" class="modal-gallery-main" src="" alt=""/>
+      <div class="modal-gallery-thumbs" id="modal-gallery-thumbs"></div>
+    </div>
     <div class="modal-body" id="modal-body"></div>
     <div class="article-actions" style="margin-bottom:1.5rem">
       <button class="action-btn" id="modal-like-btn" onclick="toggleModalLike()">
@@ -1161,14 +1164,13 @@
     <div class="form-group">
       <label class="form-label">Cover Image <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
       <div class="image-upload-area" id="upload-area">
-        <input type="file" id="write-image" accept="image/*" onchange="handleImageUpload(event)"/>
-        <button type="button" class="image-remove-btn" onclick="removeImage(event)">&#x2715;</button>
-        <img class="preview-img" id="image-preview" src="" alt="Preview"/>
+        <input type="file" id="write-image" accept="image/*" multiple onchange="handleImageUpload(event)"/>
         <div class="image-upload-placeholder">
           <div class="upload-icon">&#x1F5BC;&#xFE0F;</div>
-          <p><span>Click to upload</span> or drag &amp; drop</p>
-          <p style="font-size:0.8rem;margin-top:0.25rem">JPG, PNG, WEBP &mdash; max 5MB</p>
+          <p><span>Click to upload</span> up to 5 photos</p>
+          <p style="font-size:0.8rem;margin-top:0.25rem">JPG, PNG, WEBP &mdash; max 5MB each</p>
         </div>
+        <div class="preview-grid" id="preview-grid"></div>
       </div>
     </div>
     <div class="form-group">
@@ -1305,8 +1307,8 @@
 
     grid.innerHTML = sorted.map(a => `
       <div class="article-card" onclick="openArticle(${a.id})">
-        ${a.image
-          ? `<img class="article-img-photo" src="${a.image}" alt="${a.title}"/>`
+        ${a.images && a.images.length > 0
+          ? `<img class="article-img-photo" src="${a.images[0]}" alt="${a.title}"/>`
           : `<div class="article-img">${a.icon}</div>`
         }
         <div class="article-body">
@@ -1350,9 +1352,20 @@
     document.getElementById('modal-meta').textContent = `${a.author} · ${a.readTime} · ${a.date}`;
     document.getElementById('modal-body').innerHTML = a.body;
     document.getElementById('modal-like-count').textContent = a.likes;
-    const heroImg = document.getElementById('modal-hero-img');
-    if (a.image) { heroImg.src = a.image; heroImg.style.display = 'block'; }
-    else { heroImg.style.display = 'none'; heroImg.src = ''; }
+    const gallery = document.getElementById('modal-gallery');
+    const mainImg = document.getElementById('modal-gallery-main');
+    const thumbsEl = document.getElementById('modal-gallery-thumbs');
+    if (a.images && a.images.length > 0) {
+      gallery.style.display = 'block';
+      mainImg.src = a.images[0];
+      thumbsEl.innerHTML = a.images.length > 1
+        ? a.images.map((src, i) => `<img class="modal-gallery-thumb ${i===0?'active':''}" src="${src}" alt="" onclick="switchGalleryImg(this, '${src}')"/>`).join('')
+        : '';
+    } else {
+      gallery.style.display = 'none';
+      mainImg.src = '';
+      thumbsEl.innerHTML = '';
+    }
     document.getElementById('modal-like-btn').classList.remove('liked');
     renderComments();
     document.getElementById('article-modal').classList.add('active');
@@ -1424,27 +1437,57 @@
     document.body.style.overflow = 'hidden';
   }
 
-  let uploadedImageDataUrl = null;
+  let uploadedImages = []; // array of base64 strings
 
   function handleImageUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { showToast('⚠️ Image must be under 5MB'); return; }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      uploadedImageDataUrl = e.target.result;
-      document.getElementById('image-preview').src = uploadedImageDataUrl;
-      document.getElementById('upload-area').classList.add('has-image');
-    };
-    reader.readAsDataURL(file);
+    const files = Array.from(event.target.files);
+    const remaining = 5 - uploadedImages.length;
+    if (remaining <= 0) { showToast('⚠️ Maximum 5 images reached'); return; }
+    const toAdd = files.slice(0, remaining);
+    if (files.length > remaining) showToast(`⚠️ Only ${remaining} more image(s) allowed — first ${remaining} added`);
+
+    toAdd.forEach(file => {
+      if (file.size > 5 * 1024 * 1024) { showToast(`⚠️ ${file.name} is over 5MB — skipped`); return; }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        uploadedImages.push(e.target.result);
+        renderPreviews();
+      };
+      reader.readAsDataURL(file);
+    });
+    event.target.value = '';
   }
 
-  function removeImage(event) {
+  function renderPreviews() {
+    const grid = document.getElementById('preview-grid');
+    const area = document.getElementById('upload-area');
+    if (uploadedImages.length === 0) {
+      area.classList.remove('has-image');
+      grid.innerHTML = '';
+      return;
+    }
+    area.classList.add('has-image');
+    grid.innerHTML = uploadedImages.map((src, i) => `
+      <div class="preview-thumb ${i === 0 ? 'cover-thumb' : ''}">
+        <img src="${src}" alt="Image ${i+1}"/>
+        <button class="remove-thumb" onclick="removeUploadedImage(${i}, event)">&#x2715;</button>
+      </div>
+    `).join('');
+    // Add "add more" button if under 5
+    if (uploadedImages.length < 5) {
+      grid.innerHTML += `
+        <label class="add-more-btn" for="write-image-more">
+          <span>+</span>Add more
+          <input type="file" id="write-image-more" accept="image/*" multiple
+            style="display:none" onchange="handleImageUpload(event)"/>
+        </label>`;
+    }
+  }
+
+  function removeUploadedImage(index, event) {
     event.stopPropagation();
-    uploadedImageDataUrl = null;
-    document.getElementById('image-preview').src = '';
-    document.getElementById('write-image').value = '';
-    document.getElementById('upload-area').classList.remove('has-image');
+    uploadedImages.splice(index, 1);
+    renderPreviews();
   }
 
   function submitArticle() {
@@ -1465,7 +1508,7 @@
       id: articles.length,
       category,
       icon: icons[category] || '📝',
-      image: uploadedImageDataUrl || null,
+      images: uploadedImages.length > 0 ? [...uploadedImages] : null,
       title,
       author: name,
       authorInitial: name.charAt(0).toUpperCase(),
@@ -1487,10 +1530,9 @@
       document.getElementById(id).value = '';
     });
     document.getElementById('write-category').value = '';
-    uploadedImageDataUrl = null;
-    document.getElementById('image-preview').src = '';
+    uploadedImages = [];
     document.getElementById('write-image').value = '';
-    document.getElementById('upload-area').classList.remove('has-image');
+    renderPreviews();
 
     // Re-render the grid and scroll to it
     renderArticlesGrid();
@@ -1527,6 +1569,12 @@
   document.getElementById('confirm-dialog').addEventListener('click', function(e) {
     if (e.target === this) closeConfirm();
   });
+
+  function switchGalleryImg(thumb, src) {
+    document.getElementById('modal-gallery-main').src = src;
+    document.querySelectorAll('.modal-gallery-thumb').forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+  }
 
   function filterCategory(cat) {
     document.querySelectorAll('.cat-pill').forEach(p => {
