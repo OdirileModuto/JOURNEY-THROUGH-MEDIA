@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <meta charset="UTF-8" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -14,10 +14,8 @@
       --pink-light: #f472b6;
       --coral:      #f87171;
       --coral-warm: #fb923c;
-      /* Logo gradient: deep pink → soft pink → coral */
       --gradient: linear-gradient(135deg, #e8357a 0%, #f06292 40%, #f87171 75%, #fb923c 100%);
       --gradient-text: linear-gradient(135deg, #e8357a, #f06292, #f87171, #fb923c);
-      /* Light theme colours pulled from logo background */
       --bg:      #ffffff;
       --bg2:     #fff5f8;
       --card:    #ffffff;
@@ -41,12 +39,10 @@
       overflow-x: hidden;
     }
 
-    /* SCROLLBAR */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg2); }
     ::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 3px; }
 
-    /* SUBTLE PETAL PATTERN OVERLAY */
     body::before {
       content: '';
       position: fixed;
@@ -80,10 +76,7 @@
       text-decoration: none;
     }
 
-    .logo-star {
-      width: 42px;
-      height: 42px;
-    }
+    .logo-star { width: 42px; height: 42px; }
 
     .logo-text {
       font-family: 'Playfair Display', serif;
@@ -111,7 +104,6 @@
       text-transform: uppercase;
       transition: color 0.2s;
     }
-
     .nav-links a:hover { color: var(--pink); }
 
     .nav-btn {
@@ -143,17 +135,14 @@
 
     .hero-glow {
       position: absolute;
-      width: 700px;
-      height: 700px;
+      width: 700px; height: 700px;
       border-radius: 50%;
       background: radial-gradient(circle, rgba(232,53,122,0.10) 0%, rgba(251,146,60,0.06) 50%, transparent 70%);
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       pointer-events: none;
     }
 
-    /* decorative circles */
     .hero::after {
       content: '';
       position: absolute;
@@ -247,7 +236,7 @@
     }
     .btn-outline:hover { border-color: var(--pink); background: rgba(232,53,122,0.06); }
 
-    /* CATEGORIES BAR */
+    /* CATEGORIES */
     .categories {
       padding: 2rem;
       display: flex;
@@ -276,8 +265,9 @@
       color: white;
     }
 
-    /* FEATURED ARTICLE */
+    /* SECTIONS */
     .section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
+
     .section-label {
       font-size: 0.75rem;
       letter-spacing: 0.18em;
@@ -286,6 +276,7 @@
       font-weight: 600;
       margin-bottom: 0.5rem;
     }
+
     .section-title {
       font-family: 'Playfair Display', serif;
       font-size: 2rem;
@@ -294,6 +285,7 @@
       color: var(--text);
     }
 
+    /* FEATURED */
     .featured-grid {
       display: grid;
       grid-template-columns: 1.6fr 1fr;
@@ -315,7 +307,6 @@
     .featured-image {
       width: 100%;
       height: 260px;
-      object-fit: cover;
       background: linear-gradient(135deg, #fce4ec, #ffd0df, #ffe0b2);
       display: flex;
       align-items: center;
@@ -324,6 +315,7 @@
     }
 
     .featured-body { padding: 1.5rem; }
+
     .article-category {
       font-size: 0.72rem;
       letter-spacing: 0.12em;
@@ -332,6 +324,7 @@
       font-weight: 600;
       margin-bottom: 0.6rem;
     }
+
     .article-title {
       font-family: 'Playfair Display', serif;
       font-size: 1.35rem;
@@ -340,6 +333,7 @@
       margin-bottom: 0.75rem;
       color: var(--text);
     }
+
     .article-excerpt {
       color: var(--muted);
       font-size: 0.9rem;
@@ -356,6 +350,7 @@
     }
 
     .meta-left { display: flex; align-items: center; gap: 0.5rem; }
+
     .author-dot {
       width: 28px; height: 28px;
       border-radius: 50%;
@@ -416,6 +411,7 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 1.8rem;
     }
+
     .side-title {
       font-family: 'Playfair Display', serif;
       font-size: 0.95rem;
@@ -424,6 +420,7 @@
       margin-bottom: 0.3rem;
       color: var(--text);
     }
+
     .side-meta { font-size: 0.75rem; color: var(--muted); }
 
     /* ARTICLE GRID */
@@ -486,7 +483,7 @@
 
     @keyframes modalIn {
       from { opacity: 0; transform: scale(0.95) translateY(20px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     .modal-close {
@@ -504,6 +501,7 @@
     .modal-close:hover { background: rgba(232,53,122,0.15); color: var(--pink); }
 
     .modal-category { margin-bottom: 0.5rem; }
+
     .modal-title {
       font-family: 'Playfair Display', serif;
       font-size: 1.8rem;
@@ -512,6 +510,7 @@
       line-height: 1.2;
       color: var(--text);
     }
+
     .modal-body {
       color: var(--muted);
       line-height: 1.8;
@@ -523,11 +522,13 @@
     /* COMMENTS */
     .comments-section { border-top: 1px solid var(--border); padding-top: 1.5rem; }
     .comments-title { font-weight: 600; margin-bottom: 1rem; color: var(--text); }
+
     .comment-input-wrap {
       display: flex;
       gap: 0.75rem;
       margin-bottom: 1.5rem;
     }
+
     .comment-input {
       flex: 1;
       background: var(--bg2);
@@ -541,6 +542,7 @@
       transition: border-color 0.2s;
     }
     .comment-input:focus { outline: none; border-color: var(--pink); }
+
     .comment-submit {
       background: var(--gradient);
       border: none;
@@ -556,6 +558,7 @@
     .comment-submit:hover { opacity: 0.85; }
 
     .comment-list { display: flex; flex-direction: column; gap: 1rem; }
+
     .comment-item {
       background: var(--bg2);
       border-radius: 12px;
@@ -565,7 +568,7 @@
     .comment-author { font-weight: 600; font-size: 0.85rem; margin-bottom: 0.3rem; color: var(--pink); }
     .comment-text { font-size: 0.9rem; color: var(--muted); }
 
-    /* WRITE ARTICLE MODAL */
+    /* WRITE MODAL */
     .write-modal {
       background: white;
       border-radius: 24px;
@@ -581,6 +584,7 @@
     }
 
     .form-group { margin-bottom: 1.5rem; }
+
     .form-label {
       display: block;
       font-size: 0.82rem;
@@ -590,6 +594,7 @@
       margin-bottom: 0.5rem;
       font-weight: 600;
     }
+
     .form-input, .form-textarea, .form-select {
       width: 100%;
       background: var(--bg2);
@@ -623,12 +628,14 @@
       color: var(--text);
     }
     .newsletter p { color: var(--muted); margin-bottom: 1.5rem; }
+
     .newsletter-form {
       display: flex;
       gap: 0.75rem;
       max-width: 420px;
       margin: 0 auto;
     }
+
     .newsletter-input {
       flex: 1;
       background: white;
@@ -647,6 +654,7 @@
       padding: 3rem 2rem 2rem;
       margin-top: 4rem;
     }
+
     .footer-inner {
       max-width: 1200px;
       margin: 0 auto;
@@ -654,6 +662,7 @@
       grid-template-columns: 2fr 1fr 1fr 1fr;
       gap: 3rem;
     }
+
     .footer-brand .logo-text { font-size: 1.1rem; display: block; margin-bottom: 0.75rem; }
     .footer-tagline { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; }
     .footer-contact { color: var(--muted); font-size: 0.85rem; line-height: 1.8; }
@@ -667,6 +676,7 @@
       margin-bottom: 1rem;
       font-weight: 600;
     }
+
     .footer-links { list-style: none; }
     .footer-links li { margin-bottom: 0.5rem; }
     .footer-links a {
@@ -692,10 +702,10 @@
     /* ANIMATIONS */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* SHARE TOAST */
+    /* TOAST */
     .toast {
       position: fixed;
       bottom: 2rem;
@@ -715,7 +725,7 @@
     }
     .toast.show { opacity: 1; transform: translateY(0); }
 
-    /* MOBILE NAV TOGGLE */
+    /* HAMBURGER */
     .hamburger {
       display: none;
       flex-direction: column;
@@ -734,12 +744,7 @@
       transition: all 0.3s;
     }
 
-    /* SECTION BACKGROUNDS — alternating rhythm */
-    section:nth-of-type(even) {
-      background: var(--bg2);
-    }
-
-    /* HERO DECORATIVE STAR WATERMARK */
+    /* HERO WATERMARK */
     .hero-watermark {
       position: absolute;
       right: -80px;
@@ -751,17 +756,12 @@
       pointer-events: none;
     }
 
-    /* DIVIDER WAVE */
-    .wave-divider {
-      width: 100%;
-      overflow: hidden;
-      line-height: 0;
-      margin-top: -2px;
-    }
-    .wave-divider svg {
-      display: block;
-      width: 100%;
-    }
+    /* WAVE DIVIDER */
+    .wave-divider { width: 100%; overflow: hidden; line-height: 0; margin-top: -2px; }
+    .wave-divider svg { display: block; width: 100%; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
       .featured-grid { grid-template-columns: 1fr; }
       .articles-grid { grid-template-columns: 1fr 1fr; }
       .footer-inner { grid-template-columns: 1fr 1fr; gap: 2rem; }
@@ -811,7 +811,6 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-glow"></div>
-  <!-- Watermark star -->
   <svg class="hero-watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <polygon points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35" fill="#e8357a"/>
   </svg>
@@ -827,7 +826,7 @@
     </div>
   </div>
 </section>
-<!-- Wave divider -->
+
 <div class="wave-divider">
   <svg viewBox="0 0 1440 40" preserveAspectRatio="none" height="40">
     <path d="M0,20 C360,40 1080,0 1440,20 L1440,40 L0,40 Z" fill="#fff5f8"/>
@@ -909,13 +908,11 @@
   </div>
 </section>
 
-<!-- MORE ARTICLES -->
+<!-- LATEST ARTICLES -->
 <section class="section">
   <p class="section-label">✦ Latest</p>
   <h2 class="section-title">Fresh From the Journey</h2>
-  <div class="articles-grid" id="articles-grid">
-    <!-- JS renders cards here -->
-  </div>
+  <div class="articles-grid" id="articles-grid"></div>
 </section>
 
 <!-- NEWSLETTER -->
@@ -930,7 +927,7 @@
   </div>
 </section>
 
-<!-- CONTACT SECTION -->
+<!-- CONTACT -->
 <section class="section" id="contact">
   <p class="section-label">✦ Get In Touch</p>
   <h2 class="section-title">Contact Us</h2>
@@ -965,15 +962,15 @@
       <h3 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;color:var(--text);">Send a Message</h3>
       <div class="form-group">
         <label class="form-label">Your Name</label>
-        <input class="form-input" type="text" placeholder="John Doe"/>
+        <input class="form-input" type="text" placeholder="John Doe" id="contact-name"/>
       </div>
       <div class="form-group">
         <label class="form-label">Email</label>
-        <input class="form-input" type="email" placeholder="you@example.com"/>
+        <input class="form-input" type="email" placeholder="you@example.com" id="contact-email"/>
       </div>
       <div class="form-group">
         <label class="form-label">Message</label>
-        <textarea class="form-textarea" placeholder="Your message..." style="min-height:100px"></textarea>
+        <textarea class="form-textarea" placeholder="Your message..." style="min-height:100px" id="contact-message"></textarea>
       </div>
       <button class="btn-primary" onclick="sendMessage()" style="width:100%">Send Message</button>
     </div>
@@ -996,17 +993,17 @@
       <h4>Explore</h4>
       <ul class="footer-links">
         <li><a href="#">Home</a></li>
-        <li><a href="#">Music</a></li>
-        <li><a href="#">Fashion</a></li>
-        <li><a href="#">Culture</a></li>
-        <li><a href="#">Film & TV</a></li>
+        <li><a href="#" onclick="filterCategory('Music')">Music</a></li>
+        <li><a href="#" onclick="filterCategory('Fashion')">Fashion</a></li>
+        <li><a href="#" onclick="filterCategory('Culture')">Culture</a></li>
+        <li><a href="#" onclick="filterCategory('Film & TV')">Film & TV</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h4>Company</h4>
       <ul class="footer-links">
         <li><a href="#">About Us</a></li>
-        <li><a href="#">Write for Us</a></li>
+        <li><a href="#" onclick="openWriteModal()">Write for Us</a></li>
         <li><a href="#contact">Contact</a></li>
         <li><a href="#">Advertise</a></li>
       </ul>
@@ -1198,11 +1195,15 @@
 
   function renderArticlesGrid(filter = 'All') {
     const grid = document.getElementById('articles-grid');
-    const filtered = filter === 'All' ? articles.slice(2) : articles.slice(2).filter(a => a.category === filter);
+    const filtered = filter === 'All'
+      ? articles.slice(2)
+      : articles.slice(2).filter(a => a.category === filter);
+
     if (filtered.length === 0) {
       grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:3rem">No articles in this category yet. Be the first to write one! ✍️</div>`;
       return;
     }
+
     grid.innerHTML = filtered.map(a => `
       <div class="article-card" onclick="openArticle(${a.id})">
         <div class="article-img">${a.icon}</div>
@@ -1244,6 +1245,7 @@
     document.getElementById('modal-meta').textContent = `${a.author} · ${a.readTime} · ${a.date}`;
     document.getElementById('modal-body').innerHTML = a.body;
     document.getElementById('modal-like-count').textContent = a.likes;
+    document.getElementById('modal-like-btn').classList.remove('liked');
     renderComments();
     document.getElementById('article-modal').classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -1325,37 +1327,11 @@
     }
     closeModal('write-modal');
     showToast('✅ Article submitted for review!');
-    ['write-name','write-email','write-title','write-body'].forEach(id => document.getElementById(id).value = '');
+    ['write-name', 'write-email', 'write-title', 'write-body'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
     document.getElementById('write-category').value = '';
   }
-
-  async function loadArticles() {
-  const res = await fetch("https://your-site.netlify.app/content/blog/index.json");
-  const data = await res.json();
-
-let articles = [];
-
-async function loadArticles() {
-  const res = await fetch("/content/blog/index.json");
-  const posts = await res.json();
-
-  articles = posts.map((post, index) => ({
-    id: index,
-    title: post.title,
-    category: post.category,
-    author: post.author,
-    excerpt: post.excerpt,
-    body: marked.parse(post.body),
-    cover: post.cover,
-    date: post.date,
-    likes: 0,
-    comments: []
-  }));
-
-  renderArticlesGrid();
-}
-
-loadArticles();
 
   function filterCategory(cat) {
     document.querySelectorAll('.cat-pill').forEach(p => {
@@ -1371,7 +1347,10 @@ loadArticles();
 
   function subscribeNewsletter() {
     const email = document.getElementById('newsletter-email').value.trim();
-    if (!email || !email.includes('@')) { showToast('⚠️ Enter a valid email'); return; }
+    if (!email || !email.includes('@')) {
+      showToast('⚠️ Enter a valid email');
+      return;
+    }
     document.getElementById('newsletter-email').value = '';
     showToast('🎉 You\'re subscribed! Welcome to the journey.');
   }
@@ -1396,7 +1375,7 @@ loadArticles();
     }
   }
 
-  // Close modal on overlay click
+  // Close modals when clicking the overlay background
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) {
@@ -1406,7 +1385,7 @@ loadArticles();
     });
   });
 
-  // Init
+  // Initialise
   renderArticlesGrid();
 </script>
 </body>
