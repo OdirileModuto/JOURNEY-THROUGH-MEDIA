@@ -225,40 +225,61 @@
 </div>
 
 <script>
-  let posts = JSON.parse(localStorage.getItem('jtm_v5_posts')) || [];
+  const API_URL = "http://127.0.0.1:8000";
+let posts = [];
 
-  function openModal(id) { document.getElementById(id).classList.add('active'); }
-  function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+async function fetchPosts() {
+    const response = await fetch(`${API_URL}/posts`);
+    posts = await response.json();
+    render();
+}
 
-  async function save() {
+async function save() {
     const author = document.getElementById('userName').value;
     const title = document.getElementById('postTitle').value;
     const cat = document.getElementById('postCat').value;
     const content = document.getElementById('postContent').value;
     const files = document.getElementById('postImages').files;
 
-    if(!title || !content) return alert("Headline and the story are required!");
+    if(!title || !content) return alert("Headline and story are required!");
 
-    // Basic Image handling (processes only the first image in "multi" upload for now to save storage)
     let imageData = "";
     if(files.length > 0) {
-      imageData = await new Promise(resolve => {
-        const reader = new FileReader();
-        reader.onload = e => resolve(e.target.result);
-        reader.readAsDataURL(files[0]);
-      });
+        imageData = await new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result);
+            reader.readAsDataURL(files[0]);
+        });
     }
 
-    posts.unshift({ author: author || 'Anonymous', title, cat, content, image: imageData, likes: 0, date: new Date().toLocaleDateString() });
-    localStorage.setItem('jtm_v5_posts', JSON.stringify(posts));
-    location.reload(); 
-  }
+    const payload = { author: author || 'Anonymous', title, cat, content, image: imageData };
 
-  function render() {
+    const response = await fetch(`${API_URL}/posts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+        closeModal('writeModal');
+        fetchPosts(); // Refresh the list
+    }
+}
+
+async function del(e, id) {
+    e.stopPropagation();
+    if(confirm("Delete this story?")) {
+        await fetch(`${API_URL}/posts/${id}`, { method: 'DELETE' });
+        fetchPosts();
+    }
+}
+
+// Updated render to use the database 'id'
+function render() {
     const grid = document.getElementById('articles-grid');
-    grid.innerHTML = posts.map((p, i) => `
-      <div class="article-card" onclick="expand(${i})">
-        <button class="delete-btn-corner" onclick="del(event, ${i})">✕</button>
+    grid.innerHTML = posts.map((p) => `
+      <div class="article-card" onclick="expandById(${p.id})">
+        <button class="delete-btn-corner" onclick="del(event, ${p.id})">✕</button>
         <div class="card-img-side">
           ${p.image ? `<img src="${p.image}">` : `<div class="no-img-placeholder">JTM</div>`}
         </div>
@@ -269,46 +290,30 @@
             <p class="card-excerpt">${p.content.substring(0, 160)}...</p>
           </div>
           <div class="card-meta-bottom">
-             <span class="meta-author">By ${p.author} · ${p.date}</span>
-             <div class="card-actions">
-               <button class="action-btn-basic" onclick="like(event, ${i})">❤️ ${p.likes}</button>
-             </div>
+             <span class="meta-author">By ${p.author} · ${p.date.split('T')[0]}</span>
           </div>
         </div>
       </div>
     `).join('');
-  }
+}
 
-  // Expansion Function
-  function expand(i) {
-    const p = posts[i];
+function expandById(id) {
+    const p = posts.find(item => item.id === id);
+    if(!p) return;
     document.getElementById('readViewContent').innerHTML = `
       <span class="card-category">${p.cat}</span>
       <h1 class="hero-title" style="font-size:2.5rem; text-align:left; margin-bottom:0.5rem;">${p.title}</h1>
-      <p style="font-weight:bold; margin-bottom:1rem; color:#555;">By ${p.author} · Published: ${p.date}</p>
+      <p style="font-weight:bold; margin-bottom:1rem; color:#555;">By ${p.author} · Published: ${p.date.split('T')[0]}</p>
       ${p.image ? `<div class="read-view-hero"><img src="${p.image}"></div>` : ''}
       <div class="read-view-body"><p>${p.content}</p></div>
     `;
     openModal('readModal');
-  }
+}
 
-  function del(e, i) {
-    e.stopPropagation(); // Stops article from expanding when deleting
-    if(confirm("Delete this story?")) {
-      posts.splice(i, 1);
-      localStorage.setItem('jtm_v5_posts', JSON.stringify(posts));
-      render();
-    }
-  }
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-  function like(e, i) {
-    e.stopPropagation(); // Stops article from expanding when liking
-    posts[i].likes++;
-    localStorage.setItem('jtm_v5_posts', JSON.stringify(posts));
-    render();
-  }
-
-  document.addEventListener('DOMContentLoaded', render);
+document.addEventListener('DOMContentLoaded', fetchPosts);
 </script>
 
 </body>
