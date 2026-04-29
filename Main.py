@@ -37,7 +37,7 @@ app = FastAPI()
 # Enable CORS so your HTML file can talk to this API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://journeythroughmedia.co.za/"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -57,9 +57,10 @@ def read_root():
 @app.get("/posts")
 def get_posts():
     db = SessionLocal()
-    posts = db.query(Article).order_by(Article.id.desc()).all()
-    db.close()
-    return posts
+    try:
+        return db.query(Article).order_by(Article.id.desc()).all()
+    finally:
+        db.close()
 
 @app.post("/posts")
 def create_post(article: ArticleCreate):
