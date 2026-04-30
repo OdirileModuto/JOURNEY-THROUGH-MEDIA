@@ -9,8 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --pink:       #e8357a;
-      --pink-mid:   #f0508a;
+      --pink:      #e8357a;
+      --pink-mid:  #f0508a;
       --pink-light: #f472b6;
       --coral:      #f87171;
       --coral-warm: #fb923c;
@@ -83,14 +83,14 @@
     .read-view-hero img { width: 100%; border-radius: 15px; margin: 1.5rem 0; box-shadow: var(--shadow); }
     .read-view-body p { font-size: 1.1rem; line-height: 1.8; color: #444; white-space: pre-wrap; margin-bottom: 1rem; }
 
-    /* FORM (Original Intact) */
+    /* FORM */
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
     .form-group { margin-bottom: 1.2rem; }
     .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; color: var(--muted); text-transform: uppercase; }
     .form-input, .form-textarea { width: 100%; padding: 0.85rem; border: 1px solid #eee; border-radius: 12px; background: #fafafa; font-family: inherit; }
     .form-textarea { height: 160px; resize: vertical; }
 
-    /* FOOTER (Original Intact) */
+    /* FOOTER */
     footer { background: #1a0510; color: #fff; padding: 4rem 2rem 2rem; margin-top: 4rem; }
     .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; }
     .footer-contact a { color: var(--pink-mid); text-decoration: none; }
@@ -198,7 +198,12 @@
       <div class="form-group">
         <label>Category</label>
         <select id="postCat" class="form-input">
-          <option>Music</option><option>Fashion</option><option>Culture</option>
+          <option>Music</option>
+          <option>Fashion</option>
+          <option>Culture</option>
+          <option>Tech</option>
+          <option>Lifestyle</option>
+          <option>Automotive</option>
         </select>
       </div>
       <div class="form-group">
@@ -225,7 +230,7 @@
 </div>
 
 <script>
-  const API_URL = "https://journeythroughmedia.co.za/";
+const API_URL = "https://journey-through-media-6.onrender.com"; // Served from the same backend URL
 let posts = [];
 
 async function fetchPosts() {
@@ -274,7 +279,6 @@ async function del(e, id) {
     }
 }
 
-// Updated render to use the database 'id'
 function render() {
     const grid = document.getElementById('articles-grid');
     grid.innerHTML = posts.map((p) => `
