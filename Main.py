@@ -67,7 +67,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:8000",
         "http://127.0.0.1:8000",
-        "https://your-site.netlify.app", # <-- REPLACE with your actual Netlify URL
+        "https://coruscating-speculoos-f78005.netlify.app", # <-- REPLACE with your actual Netlify URL
     ],
     allow_methods=["*"],
     allow_headers=["*"],
