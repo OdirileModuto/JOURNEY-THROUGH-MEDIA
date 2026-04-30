@@ -24,6 +24,10 @@ if DATABASE_URL.startswith("sqlite"):
         connect_args={"check_same_thread": False}
     )
 else:
+    # Render's DB string often starts with postgres://, SQLAlchemy requires postgresql://
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    
     engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -63,7 +67,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:8000",
         "http://127.0.0.1:8000",
-        "https://your-site.netlify.app", # <-- Add your Netlify frontend URL here
+        "https://your-site.netlify.app", # <-- REPLACE with your actual Netlify URL
     ],
     allow_methods=["*"],
     allow_headers=["*"],

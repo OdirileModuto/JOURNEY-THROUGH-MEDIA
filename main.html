@@ -1,135 +1,324 @@
-import os
-import datetime
-from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime
-from sqlalchemy.orm import declarative_base, sessionmaker
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Journey Through Media</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --pink:      #e8357a;
+      --pink-mid:  #f0508a;
+      --pink-light: #f472b6;
+      --coral:      #f87171;
+      --coral-warm: #fb923c;
+      --gradient: linear-gradient(135deg, #e8357a 0%, #f06292 40%, #f87171 75%, #fb923c 100%);
+      --gradient-text: linear-gradient(135deg, #e8357a, #f06292, #f87171, #fb923c);
+      --bg:      #ffffff;
+      --bg2:     #fff5f8;
+      --card:    #ffffff;
+      --border:  rgba(232, 53, 122, 0.15);
+      --border2: rgba(232, 53, 122, 0.30);
+      --text:    #1a0510;
+      --muted:   #9e4070;
+      --shadow:  0 4px 24px rgba(232,53,122,0.10);
+      --shadow-hover: 0 10px 40px rgba(232,53,122,0.22);
+    }
 
-# Load environment variables
-load_dotenv()
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; line-height: 1.6; }
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+    /* NAVIGATION */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border); padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between; height: 70px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .logo-star { width: 40px; height: 40px; }
+    .logo-text-nav { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.1; }
+    .nav-btn { background: var(--gradient); color: white; border: none; padding: 0.6rem 1.4rem; border-radius: 50px; font-weight: 600; cursor: pointer; }
 
-# Set up fallback if not provided
-if not DATABASE_URL:
-    print("DATABASE_URL not set — using SQLite fallback")
-    DATABASE_URL = "sqlite:///./test.db"
+    /* HERO */
+    .hero { padding: 8rem 2rem 4rem; text-align: center; background: var(--bg2); }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; margin-bottom: 1rem; }
+    .hero-title span { background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-if DATABASE_URL.startswith("sqlite"):
-    engine = create_engine(
-        DATABASE_URL,
-        connect_args={"check_same_thread": False}
-    )
-else:
-    # Render's DB string often starts with postgres://, SQLAlchemy requires postgresql://
-    if DATABASE_URL.startswith("postgres://"):
-        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    /* GRID & DYNAMIC SIDE IMAGE STYLE */
+    .section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
+    .articles-grid { display: flex; flex-direction: column; gap: 2rem; }
     
-    engine = create_engine(DATABASE_URL)
+    .article-card { 
+      background: white; border-radius: 20px; border: 1px solid var(--border); 
+      overflow: hidden; box-shadow: var(--shadow); position: relative; 
+      display: flex; transition: 0.3s; cursor: pointer;
+    }
+    .article-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+    .card-img-side { width: 40%; max-width: 300px; min-height: 220px; background: #fdf2f8; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .card-img-side img { width: 100%; height: 100%; object-fit: cover; }
+    .no-img-placeholder { font-size: 1.2rem; color: var(--muted); padding: 2rem; font-weight: bold; font-family: 'Playfair Display', serif; }
 
-# =========================
-# DATABASE MODEL
-# =========================
+    .card-body-side { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .card-category { color: var(--pink); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; display: block; }
+    .card-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.5rem; line-height: 1.2; }
+    .card-excerpt { color: var(--muted); font-size: 0.95rem; margin-bottom: 1rem; line-height: 1.5; }
+    
+    /* ACTIONS & EXPAND */
+    .card-meta-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; border-top: 1px solid #eee; padding-top: 1rem; }
+    .meta-author { font-size: 0.8rem; font-weight: 600; color: #555; }
+    .card-actions { display: flex; gap: 0.75rem; }
+    .action-btn-basic { border: none; background: none; cursor: pointer; font-size: 0.9rem; color: var(--muted); }
+    .delete-btn-corner { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.8); border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; color: red; font-weight: bold; }
 
-class Article(Base):
-    __tablename__ = "articles"
+    /* MODAL (Expansion & Submission) */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: white; padding: 2.5rem; border-radius: 24px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; position: relative; }
+    
+    /* READ VIEW (Expansion) */
+    .read-view-hero img { width: 100%; border-radius: 15px; margin: 1.5rem 0; box-shadow: var(--shadow); }
+    .read-view-body p { font-size: 1.1rem; line-height: 1.8; color: #444; white-space: pre-wrap; margin-bottom: 1rem; }
 
-    id = Column(Integer, primary_key=True, index=True)
-    author = Column(String(100))
-    title = Column(String(255))
-    cat = Column(String(50))
-    content = Column(Text)
-    image = Column(Text)
-    likes = Column(Integer, default=0)
-    date = Column(DateTime, default=datetime.datetime.utcnow)
+    /* FORM */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; color: var(--muted); text-transform: uppercase; }
+    .form-input, .form-textarea { width: 100%; padding: 0.85rem; border: 1px solid #eee; border-radius: 12px; background: #fafafa; font-family: inherit; }
+    .form-textarea { height: 160px; resize: vertical; }
 
-# Create tables safely
-Base.metadata.create_all(bind=engine)
+    /* FOOTER */
+    footer { background: #1a0510; color: #fff; padding: 4rem 2rem 2rem; margin-top: 4rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; }
+    .footer-contact a { color: var(--pink-mid); text-decoration: none; }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 0.75rem; }
+    .footer-links a { color: #9ca3af; text-decoration: none; font-size: 0.9rem; transition: 0.2s; }
+    .footer-links a:hover { color: var(--pink-mid); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); max-width: 1200px; margin: 3rem auto 0; padding-top: 2rem; display: flex; justify-content: space-between; font-size: 0.85rem; color: #6b7280; }
 
-# =========================
-# FASTAPI APP
-# =========================
+    @media (max-width: 900px) {
+      .footer-inner { grid-template-columns: 1fr; } 
+      .form-row { grid-template-columns: 1fr; }
+      .article-card { flex-direction: column; }
+      .card-img-side { width: 100%; max-width: 100%; min-height: 180px; }
+    }
+  </style>
+</head>
+<body>
 
-app = FastAPI()
+<nav>
+  <a href="#" class="nav-logo">
+    <svg class="logo-star" viewBox="0 0 100 100">
+      <defs><linearGradient id="sg"><stop offset="0%" stop-color="#e8357a"/><stop offset="100%" stop-color="#fb923c"/></linearGradient></defs>
+      <polygon points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35" fill="url(#sg)"/>
+      <text x="50" y="57" text-anchor="middle" font-weight="700" font-size="22" fill="white">J</text>
+    </svg>
+    <span class="logo-text-nav">JOURNEY<br>THROUGH MEDIA</span>
+  </a>
+  <button class="nav-btn" onclick="openModal('writeModal')">✍️ Write Post</button>
+</nav>
 
-# =========================
-# CORS
-# =========================
+<section class="hero">
+  <h1 class="hero-title">Where <span>Culture</span> Leads</h1>
+  <p>Exploring sound and style. Submissions from Johannesburg.</p>
+</section>
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8000",
-        "http://127.0.0.1:8000",
-        "https://your-site.netlify.app", # <-- Replace with your actual Netlify URL
-    ],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+<section class="section">
+  <div class="articles-grid" id="articles-grid"></div>
+</section>
 
-# =========================
-# Pydantic Schema
-# =========================
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo-text" style="font-family:'Playfair Display',serif;font-size:1rem;letter-spacing:0.08em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">JOURNEY THROUGH MEDIA</span>
+      <p style="font-size:0.9rem; margin: 1rem 0; color: #d1d5db;">Where culture leads from sound to style — we cover the journey.</p>
+      <div class="footer-contact">
+        <p>📧 <a href="mailto:jjourneythroughmedia@gmail.com">jjourneythroughmedia@gmail.com</a></p>
+        <p>📞 <a href="tel:+27643408670">064 340 8670</a></p>
+        <p>📍 Johannesburg, South Africa</p>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul class="footer-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Music</a></li>
+        <li><a href="#">Fashion</a></li>
+        <li><a href="#">Culture</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul class="footer-links">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#" onclick="openModal('writeModal')">Write for Us</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul class="footer-links">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Use</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Journey Through Media. All rights reserved.</p>
+    <p>Made with ❤️ in Johannesburg</p>
+  </div>
+</footer>
 
-class ArticleCreate(BaseModel):
-    author: str
-    title: str
-    cat: str
-    content: str
-    image: str = ""
+<div class="modal-overlay" id="writeModal">
+  <div class="modal">
+    <button style="float:right; border:none; background:none; cursor:pointer; font-size:1.2rem;" onclick="closeModal('writeModal')">✕</button>
+    <h2 style="font-family:'Playfair Display', serif; margin-bottom:1.5rem;">Create New Article</h2>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" id="userName" class="form-input" placeholder="Full Name">
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="userEmail" class="form-input" placeholder="email@gmail.com">
+      </div>
+    </div>
 
-# =========================
-# ROUTES
-# =========================
+    <div class="form-group">
+      <label>Article Headline</label>
+      <input type="text" id="postTitle" class="form-input" placeholder="Enter headline...">
+    </div>
 
-@app.get("/", response_class=HTMLResponse)
-def read_root():
-    try:
-        with open("index.html", "r", encoding="utf-8") as f:
-            return f.read()
-    except FileNotFoundError:
-        return "<h1>Could not find the index.html file in the project root directory.</h1>"
+    <div class="form-row">
+      <div class="form-group">
+        <label>Category</label>
+        <select id="postCat" class="form-input">
+          <option>Music</option>
+          <option>Fashion</option>
+          <option>Culture</option>
+          <option>Tech</option>
+          <option>Lifestyle</option>
+          <option>Automotive</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Upload Pictures (Multiple)</label>
+        <input type="file" id="postImages" class="form-input" multiple accept="image/*">
+      </div>
+    </div>
 
+    <div class="form-group">
+      <label>The Article</label>
+      <textarea id="postContent" class="form-textarea" placeholder="Start typing your story here..."></textarea>
+    </div>
 
-@app.get("/posts")
-def get_posts():
-    db = SessionLocal()
-    try:
-        posts = db.query(Article).order_by(Article.id.desc()).all()
-        return posts
-    finally:
-        db.close()
+    <button class="nav-btn" style="width:100%" onclick="save()">Publish Article</button>
+  </div>
+</div>
 
+<div class="modal-overlay" id="readModal" onclick="closeModal('readModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button style="float:right; border:none; background:none; cursor:pointer; font-size:1.2rem;" onclick="closeModal('readModal')">✕</button>
+    <div id="readViewContent"></div>
+    <button class="nav-btn" style="width:100%; margin-top:2rem;" onclick="closeModal('readModal')">Close Article</button>
+  </div>
+</div>
 
-@app.post("/posts")
-def create_post(article: ArticleCreate):
-    db = SessionLocal()
-    try:
-        new_post = Article(**article.model_dump())
-        db.add(new_post)
-        db.commit()
-        db.refresh(new_post)
-        return new_post
-    finally:
-        db.close()
+<script>
+const API_URL = "https://journey-through-media-6.onrender.com"; // Served from the same backend URL
+let posts = [];
 
+async function fetchPosts() {
+    const response = await fetch(`${API_URL}/posts`);
+    posts = await response.json();
+    render();
+}
 
-@app.delete("/posts/{post_id}")
-def delete_post(post_id: int):
-    db = SessionLocal()
-    try:
-        post = db.query(Article).filter(Article.id == post_id).first()
-        if not post:
-            raise HTTPException(status_code=404, detail="Post not found")
+async function save() {
+    const author = document.getElementById('userName').value;
+    const title = document.getElementById('postTitle').value;
+    const cat = document.getElementById('postCat').value;
+    const content = document.getElementById('postContent').value;
+    const files = document.getElementById('postImages').files;
 
-        db.delete(post)
-        db.commit()
-        return {"message": "Deleted"}
-    finally:
-        db.close()
+    if(!title || !content) return alert("Headline and story are required!");
+
+    let imageData = "";
+    if(files.length > 0) {
+        imageData = await new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result);
+            reader.readAsDataURL(files[0]);
+        });
+    }
+
+    const payload = { author: author || 'Anonymous', title, cat, content, image: imageData };
+
+    const response = await fetch(`${API_URL}/posts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+        closeModal('writeModal');
+        fetchPosts(); // Refresh the list
+    }
+}
+
+async function del(e, id) {
+    e.stopPropagation();
+    if(confirm("Delete this story?")) {
+        await fetch(`${API_URL}/posts/${id}`, { method: 'DELETE' });
+        fetchPosts();
+    }
+}
+
+function render() {
+    const grid = document.getElementById('articles-grid');
+    grid.innerHTML = posts.map((p) => `
+      <div class="article-card" onclick="expandById(${p.id})">
+        <button class="delete-btn-corner" onclick="del(event, ${p.id})">✕</button>
+        <div class="card-img-side">
+          ${p.image ? `<img src="${p.image}">` : `<div class="no-img-placeholder">JTM</div>`}
+        </div>
+        <div class="card-body-side">
+          <div>
+            <span class="card-category">${p.cat}</span>
+            <h3 class="card-title">${p.title}</h3>
+            <p class="card-excerpt">${p.content.substring(0, 160)}...</p>
+          </div>
+          <div class="card-meta-bottom">
+             <span class="meta-author">By ${p.author} · ${p.date.split('T')[0]}</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+}
+
+function expandById(id) {
+    const p = posts.find(item => item.id === id);
+    if(!p) return;
+    document.getElementById('readViewContent').innerHTML = `
+      <span class="card-category">${p.cat}</span>
+      <h1 class="hero-title" style="font-size:2.5rem; text-align:left; margin-bottom:0.5rem;">${p.title}</h1>
+      <p style="font-weight:bold; margin-bottom:1rem; color:#555;">By ${p.author} · Published: ${p.date.split('T')[0]}</p>
+      ${p.image ? `<div class="read-view-hero"><img src="${p.image}"></div>` : ''}
+      <div class="read-view-body"><p>${p.content}</p></div>
+    `;
+    openModal('readModal');
+}
+
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+document.addEventListener('DOMContentLoaded', fetchPosts);
+</script>
+
+</body>
+</html>
